@@ -61,12 +61,12 @@ Updates a transaction.
 **Responds with:** LEDGER_JSON  
 
 #### `/gl/LEDGER_ID/transaction/TRANSACTION_ID/upsert`
-Insert or update a transaction.  
+Inserts or updates a transaction.  
 **Type:** `POST`  
 **Responds with:** LEDGER_JSON  
 
 #### `/gl/LEDGER_ID/transaction/TRANSACTION_ID/delete`
-Delete a transaction.  
+Deletes a transaction.  
 **Type:** `POST`  
 **Responds with:** LEDGER_JSON  
 
@@ -78,7 +78,7 @@ List of all transactions for the account.
 **Responds with:** \[ TRANSACTION_JSON \]  
 
 #### `/gl/LEDGER_ID/account/ACCOUNT_ID/stats`
-Information about the account.
+Information about the account.  
 **Type:** `GET`  
 **Responds with:** ACCOUNT_STATS_JSON  
 
