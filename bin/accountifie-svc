@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+var log = require('llog');
+require('errortrap')();
+
+var port = process.env.PORT || 5124;
+var mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/accountifie';
+require('../app')({ port: port, mongoUrl: mongoUrl }).start();

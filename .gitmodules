@@ -1,0 +1,3 @@
+[submodule ".style"]
+	path = .style
+	url = git@github.com:electronifie/style-guide.git

@@ -1,0 +1,51 @@
+{
+  "name": "accountifie-svc",
+  "version": "1.0.0",
+  "description": "A simple REST ledger service with running balances. Perfect for use with accountifie.",
+  "main": "app.js",
+  "bin": {
+    "accountifie-server": "./bin/accountifie-svc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electronifie/accountifie-svc"
+  },
+  "author": "andrew.mckenzie@electronifie.com",
+  "homepage": "https://github.com/electronifie/accountifie-svc",
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [ "finance", "REST", "accountifie", "ledger" ],
+  "dependencies": {
+    "async": "^1.2.1",
+    "bignumber.js": "^2.0.7",
+    "body-parser": "^1.13.1",
+    "bunyan": "^1.5.1",
+    "cconfig": "^0.1.1",
+    "errortrap": "1.0.0",
+    "express": "^4.12.4",
+    "format": "^0.2.1",
+    "llog": "0.0.10",
+    "lodash": "^3.9.3",
+    "moment": "^2.10.3",
+    "mongodb": "^2.0.34",
+    "mongoose": "^4.2.7",
+    "response-time": "^2.3.1",
+    "sourced": "0.0.14",
+    "sourced-repo-mongo": "^0.3.6",
+    "validate": "^2.1.6"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "change-case": "^2.3.0",
+    "cucumber": "^0.9.1",
+    "mocha": "^2.2.5",
+    "pg": "^4.4.0",
+    "pg-cursor": "^1.0.0",
+    "request": "^2.58.0",
+    "should": "^7.0.1",
+    "stylish-commit-auto-hook-install": "0.0.7",
+    "supervisor": "^0.9.1",
+    "underscore-cli": "^0.2.18"
+  }
+}
