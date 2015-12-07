@@ -107,17 +107,17 @@ Information about the account.
 
 # Response formats
 
-## LEDGER_JSON
+#### LEDGER_JSON
 
-## ACCOUNT_JSON
+#### ACCOUNT_JSON
 
-## TRANSACTION_JSON
+#### TRANSACTION_JSON
 
-## LPQ_STATS_JSON
+#### LPQ_STATS_JSON
 
-## ACCOUNT_STATS_JSON
+#### ACCOUNT_STATS_JSON
 
-## LEDGER_STATS_JSON
+#### LEDGER_STATS_JSON
 
 ```
   id: String,
@@ -131,6 +131,6 @@ Information about the account.
 
 # Implementation details
 
-### Deferred balance calculation
+#### Deferred balance calculation
 
-### Persistence with sourced
+#### Persistence with sourced
