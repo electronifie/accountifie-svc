@@ -1,5 +1,7 @@
 # accountifie-svc [![Build Status](https://travis-ci.org/electronifie/accountifie-svc.svg)](https://travis-ci.org/electronifie/accountifie-svc)
 
+[npm](https://www.npmjs.com/package/accountifie-svc)
+
 A REST ledger server with support for:
 
  - multiple ledgers
