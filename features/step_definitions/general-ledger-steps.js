@@ -174,8 +174,8 @@ module.exports = function () {
     /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)should be:$/,
     function (fromDateStr, toDateStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, balanceTable, callback) {
 
-      var fromDate = fromDateStr ? fromDateStr.replace(/$from /, '') : undefined;
-      var toDate = toDateStr ? toDateStr.replace(/$to /, '') : undefined;
+      var fromDate = fromDateStr ? fromDateStr.replace(/^from /, '') : undefined;
+      var toDate = toDateStr ? toDateStr.replace(/^to /, '') : undefined;
       var excludingCounterparties = excludingCounterpartiesStr ? excludingCounterpartiesStr.replace(/^excluding counterparties? "([^"]*)" $/, '$1').split(',') : '';
       var excludingContraAccounts = excludingContraAccountsStr ? excludingContraAccountsStr.replace(/^excluding contra accounts? "([^"]*)" $/, '$1').split(',') : '';
       var withCounterparties = withCounterpartiesStr ? withCounterpartiesStr.replace(/^with counterparties? "([^"]*)" $/, '$1').split(',') : '';
