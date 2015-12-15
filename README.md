@@ -1,6 +1,4 @@
-# accountifie-svc [![Build Status](https://travis-ci.org/electronifie/accountifie-svc.svg)](https://travis-ci.org/electronifie/accountifie-svc)
-
-[npm](https://www.npmjs.com/package/accountifie-svc)
+# accountifie-svc [![Build Status](https://travis-ci.org/electronifie/accountifie-svc.svg)](https://travis-ci.org/electronifie/accountifie-svc) [![npm version](https://badge.fury.io/js/accountifie-svc.svg)](https://www.npmjs.com/package/accountifie-svc)
 
 A REST ledger server with support for:
 
@@ -8,6 +6,8 @@ A REST ledger server with support for:
  - multi-day transactions
  - running balances
  - fetching ledger state at arbitrary point in time
+
+Works best with [accountifie](https://github.com/electronifie/accountifie), a full-featured accounting and reporting frontend.
 
 **To install:** `npm install accountifie-svc -g`  
 **To run:** `PORT=5124 MONGO_URL=mongodb://localhost:27017/accountifie accountifie-server`  
