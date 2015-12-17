@@ -12,6 +12,7 @@
   },
   "author": "andrew.mckenzie@electronifie.com",
   "homepage": "https://electronifie.github.io/accountifie-svc",
+  "license": "MIT",
   "scripts": {
     "test": "make test"
   },
