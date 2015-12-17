@@ -12,7 +12,7 @@ test:
 	$(MAKE) DEBUG= LOG_LEVEL=20 test-cucumber
 
 docs:
-	./node_modules/.bin/apidoc -o './docs' -i './lib/routes'
+	./node_modules/.bin/apidoc -o './docs' -i './lib'
 
 test-json:
 	DEBUG= LOG_LEVEL=100 ./node_modules/.bin/cucumber-js -f json:test-report.json
