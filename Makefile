@@ -11,6 +11,9 @@ run:
 test:
 	$(MAKE) DEBUG= LOG_LEVEL=20 test-cucumber
 
+docs:
+	./node_modules/.bin/apidoc -o './docs' -i './lib/routes'
+
 test-json:
 	DEBUG= LOG_LEVEL=100 ./node_modules/.bin/cucumber-js -f json:test-report.json
 
@@ -72,4 +75,4 @@ snapshot-transactions:
 delete-transaction:
 	curl -X POST '$(URL_BASE)/gl/$(COMPANY)/transaction/$(TRANSACTION)/delete' | ./node_modules/.bin/underscore pretty
 
-.PHONY: test test-cucumber
+.PHONY: test test-cucumber docs

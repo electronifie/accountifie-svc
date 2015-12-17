@@ -1,11 +1,15 @@
 language: node_js
 node_js:
-  - "4.1"
-  - "4.0"
-  - "0.12"
-  - "0.11"
-  - "0.10"
-  - "iojs"
-
+- '4.1'
+- '4.0'
+- '0.12'
+- '0.11'
+- '0.10'
+- iojs
 script:
-  - "npm test"
+- npm test
+after_success:
+- .scripts/publish_docs.sh
+env:
+  global:
+    secure: ZpEJ3srS3279hKlzMB+WEZrRoVCj6rFYHNyDS1G+zkaE5dLy7lkABEjdY61AXIkjw1gWapH1mabjW3Qc03UKFQ9qjB3XYTu67JJzmm2paLb1v0JyQuLPQomLiGqDnmOswt+aG9rwL3O07M9oi/ptOgE1ka7IB4ZtD/EzPedS1xRpGmn0MEnB7C6AlHRaugDqPWnkoi3XJJbay2KickpHntGn5BZyiRKGgHok8bnGkhq/2HCzEVrMDVJTYA2JpNauhK+tkadyirZKdWaPZi1EqaToCVw6RH0m++6NyWQiPKL4I7STCbDFWbFVBKYWucvaPthJvkDzZD2zaSuO1YoLDlGo7XLdaU8syGa5zOofbCW+JE23AmOmtjS3VG8sgveYd5FIkWQvcGStPVwCjKQ/9crSgFHUAbwy+vO4KF1rohs2TOTvlbf6seQILTDFbbZjqbVT2UNegNmCh2c8vkRK2KYcSPi6XuFRQBSTUQ6qpjBYmomL8HMghIegJNJhLtRGoYwkf1/8QoOrExpO+p620mLEjCQ3L8q3LRl+Z69lHlSWZapPqwERoA5KajST2kros5QGbiB1wFcWVYCfyPqpR06JSbe1l41PndDWYMQOYq6jfB/6KP8CgaWG+r6j9R/obYrg7KKsud50Qfqy4sKTTmmym3UsyR9eOmlwoosmHsQ=

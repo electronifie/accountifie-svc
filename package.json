@@ -11,11 +11,16 @@
     "url": "https://github.com/electronifie/accountifie-svc"
   },
   "author": "andrew.mckenzie@electronifie.com",
-  "homepage": "https://github.com/electronifie/accountifie-svc",
+  "homepage": "https://electronifie.github.io/accountifie-svc",
   "scripts": {
     "test": "make test"
   },
-  "keywords": [ "finance", "REST", "accountifie", "ledger" ],
+  "keywords": [
+    "finance",
+    "REST",
+    "accountifie",
+    "ledger"
+  ],
   "dependencies": {
     "async": "^1.2.1",
     "bignumber.js": "^2.0.7",
@@ -36,6 +41,7 @@
     "validate": "^2.1.6"
   },
   "devDependencies": {
+    "apidoc": "^0.14.0",
     "chai": "^3.0.0",
     "change-case": "^2.3.0",
     "cucumber": "^0.9.1",
@@ -47,5 +53,14 @@
     "stylish-commit-auto-hook-install": "0.0.7",
     "supervisor": "^0.9.1",
     "underscore-cli": "^0.2.18"
+  },
+  "apidoc": {
+    "name": "Accountifie Service",
+    "title": "accountifie-svc docs",
+    "header": {
+      "title": "accountifie-svc",
+      "filename": "readme.md"
+    },
+    "url": "http://localhost:5124"
   }
 }
