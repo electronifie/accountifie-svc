@@ -91,12 +91,13 @@ could take a few minutes to generate after CUDing some old transactions, resulti
 to have much real-world impact. You can monitor the status of the LPQ at
 [`/lpq/stats`](http://electronifie.github.io/accountifie-svc/#api-Util-GetLpqStats).
 
-Balances may be requested with a **Filter** that excludes Counterparties or Conta Accounts, or limits to a set of Counterparties.
-Filtered transactions are unable to use the cached balances generated for filtered transactions, nor is filter able to
-use the cached balances for another, as a different set of transactions may be used to calculate the transactions. Because
-of this, each balance cache is also associated with a filter. By default, only unfiltered transactions have balance caches
-generated automatically, though all requests will have the balance cached against the filter provided in the request. You
-can set up automatic cache generation for a filter by using the
+Balances may be requested with a **Filter** that excludes Counterparties or Conta Accounts, or limit to a set of Counterparties.
+Filtered transactions are unable to use the cached balances generated for unfiltered transactions, nor is a filter able to
+use the cached balances for a different filter, as a different set of transactions may be used to calculate the transactions. Because
+of this, each balance cache is also associated with a filter.
+
+By default, only unfiltered transactions have balance caches generated automatically, though all requests will have the balance
+cached against the filter provided in the request. You can get caches to generate automatically for a filter by using the
 [`/gl/:LEDGER_ID/add-filter`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-PostGlLedger_idAddFilter) endpoint.
 
 #### Multi-day transactions
