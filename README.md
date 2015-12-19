@@ -46,7 +46,7 @@ transaction).
 An Account contains references to all Transactions that have at least one Line for that Account. An Account also has a
 **Balance** at any date. The Balance is calculated by summing the Account's Line amounts up to that date.
 
-The models also contain references to **counterparties** and **Business Model Objects (BMOs)** which are stored and
+The models also contain references to **Counterparties** and **Business Model Objects (BMOs)** which are stored and
 returned for convenience, but not really used by the service (except for filtering).
 
 ## How it works
@@ -75,18 +75,29 @@ generate a snapshot with the ledger's current state by `POST`ing to the
 #### Balance generation
 
 Generating balances based on thousands of transactions has some impact on performance, especially as we're using BigNumber to
-prevent floating point arithmetic issues. To improve performance, we generate and cache balances for each account at the monthly
-anniversary of the account's first transaction. Generating a balance for a date then involves only adding the transactions between
-the date and the balance cache immediately prior to the date. To make things even snappier we also cache the result of every
-balance request that's processed, so the second time you hit `/gl/myco/balances?date=2015-01-13` will probably be faster than the
-first.
+prevent floating point arithmetic issues. To improve performance, we use a
+[**Balance Cache**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/accountBalanceCache.js) for each
+account at the monthly anniversary of the account's first transaction. Generating a balance for a date then involves only
+adding the transactions between the date and the Balance Cache immediately prior to the date. To make things even snappier
+we also cache the result of every balance request that's processed, so the second time you hit `/gl/myco/balances?date=2015-01-13`
+will probably be faster than the first.
 
 Whenever a transaction is added, updated, or deleted, all caches with dates after the transaction are invalidated. Regenerating the
 caches can take seconds and, since node is unithreaded, get in the way of processing requests. To overcome this, the task is split
-into microtasks (one per cache) which are placed on the **Low Priority Queue** (aka the **LPQ**). The LPQ processes a microtask
-then sleeps for a bit so requests can be processed. This means the balance caches could take a few minutes to generate after CUDing
-some old transactions, resulting in slowed balance fetching, but this is unlikely to have much real-world impact. You can monitor
-the status of the LPQ at [`/lpq/stats`](http://electronifie.github.io/accountifie-svc/#api-Util-GetLpqStats).
+into microtasks (one per cache) which are placed on the
+[**Low Priority Queue**](https://github.com/electronifie/accountifie-svc/blob/master/lib/low-priority-queue/lowPriorityQueue.js)
+(aka the **LPQ**). The LPQ processes a microtask then sleeps for a bit so requests can be processed. This means the balance caches
+could take a few minutes to generate after CUDing some old transactions, resulting in slowed balance fetching, but this is unlikely
+to have much real-world impact. You can monitor the status of the LPQ at
+[`/lpq/stats`](http://electronifie.github.io/accountifie-svc/#api-Util-GetLpqStats).
+
+Balances may be requested with a **Filter** that excludes Counterparties or Conta Accounts, or limits to a set of Counterparties.
+Filtered transactions are unable to use the cached balances generated for filtered transactions, nor is filter able to
+use the cached balances for another, as a different set of transactions may be used to calculate the transactions. Because
+of this, each balance cache is also associated with a filter. By default, only unfiltered transactions have balance caches
+generated automatically, though all requests will have the balance cached against the filter provided in the request. You
+can set up automatic cache generation for a filter by using the
+[`/gl/:LEDGER_ID/add-filter`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-PostGlLedger_idAddFilter) endpoint.
 
 #### Multi-day transactions
 
