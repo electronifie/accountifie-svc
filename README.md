@@ -8,6 +8,8 @@
 
 **To run:** `PORT=5124 MONGO_URL=mongodb://localhost:27017/accountifie accountifie-server`
 
+**To test:** `npm test`
+
 <hr>
 
 A few-frills REST ledger server built to support [**Accountifie**](https://github.com/electronifie/accountifie), but
@@ -30,7 +32,7 @@ Special features:
 objects for your business's domain that result in generated transactions, and tools for tailoring your own financial
 reports with advanced export options. More information is available [on github](https://github.com/electronifie/accountifie).
 
-## How we modelled the domain
+## Ledgers and Accounts and Transactions, oh my!
 
 The world consists of [**General Ledgers**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/generalLedger.js),
 also known as **GLs**. Each GL contains sets of [**Transactions**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/transaction.js)
@@ -47,11 +49,12 @@ An Account contains references to all Transactions that have at least one Line f
 The models also contain references to **counterparties** and **Business Model Objects (BMOs)** which are stored and
 returned for convenience, but not really used by the service (except for filtering).
 
-## Implementation details
+## How it works
 
 The service's focus has been on operational speed, especially when calculating balances. All objects are kept in
 memory, sometimes at the cost of startup time. Changes are persisted to mongo using the event sourcing pattern provided
-by sourced.
+by sourced. Most implementation details have been spec'd out in 
+[the tests](https://github.com/electronifie/accountifie-svc/blob/master/features/general-ledger.feature).
 
 #### Persistence with sourced
 
