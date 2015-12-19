@@ -1,6 +1,6 @@
 {
   "name": "accountifie-svc",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple REST ledger service with running balances. Perfect for use with accountifie.",
   "main": "app.js",
   "bin": {
@@ -20,7 +20,10 @@
     "finance",
     "REST",
     "accountifie",
-    "ledger"
+    "ledger",
+    "running balance",
+    "account",
+    "transaction"
   ],
   "dependencies": {
     "async": "^1.2.1",

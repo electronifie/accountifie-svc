@@ -1,17 +1,108 @@
 [![Build Status](https://travis-ci.org/electronifie/accountifie-svc.svg)](https://travis-ci.org/electronifie/accountifie-svc)
 [![npm version](https://badge.fury.io/js/accountifie-svc.svg)](https://www.npmjs.com/package/accountifie-svc)
 [![GitHub stars](https://img.shields.io/github/release/electronifie/accountifie-svc.svg?style=social&label=Source)](https://github.com/electronifie/accountifie-svc)
+
 <hr>
 
 **To install:** `npm install accountifie-svc -g`  
 
 **To run:** `PORT=5124 MONGO_URL=mongodb://localhost:27017/accountifie accountifie-server`
 
-A REST ledger server with support for:
+<hr>
 
- - multiple ledgers
- - multi-day transactions
- - running balances
- - fetching ledger state at arbitrary point in time
+A few-frills REST ledger server built to support [**Accountifie**](https://github.com/electronifie/accountifie), but
+also works as a standalone server.
 
-Works best with [accountifie](https://github.com/electronifie/accountifie), a full-featured accounting and reporting frontend.  
+Basic features:
+ - stores ledgers for multiple companies.
+ - stores transactions.
+ - groups a transaction's balancing entries across multiple accounts.
+ - generates balances for an account at a given date.
+
+Special features:
+ - balance caching for faster balance retrieval.
+ - multi-day transactions for cases like depreciation.
+ - fetching of transaction-list state at a given point in time. Useful for troubleshooting discrepencies.
+   in a report for a given date caused by back-dated or updated transactions.
+ - filtering of balances to exclude transactions for selected counterparties or contra accounts.
+
+**Accountifie** is a django frontend with advanced permission and reporting features. It provides a platform for you to create custom
+objects for your business's domain that result in generated transactions, and tools for tailoring your own financial
+reports with advanced export options. More information is available [on github](https://github.com/electronifie/accountifie).
+
+## How we modelled the domain
+
+The world consists of [**General Ledgers**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/generalLedger.js),
+also known as **GLs**. Each GL contains sets of [**Transactions**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/transaction.js)
+and [**Accounts**](https://github.com/electronifie/accountifie-svc/blob/master/lib/models/account.js).
+
+A Transaction contains **Lines**, each with a balance and an Account. All a Transaction's Lines should balance to 0. A Line's
+**Contra Accounts** are the Accounts of _all other_ Lines for that transaction. A Transaction may occur on a single date
+or, to avoid highly repetitive transactions like depreciation, may be spread across a period (referred to as a **multi-date**
+transaction).
+
+An Account contains references to all Transactions that have at least one Line for that Account. An Account also has a
+**Balance** at any date. The Balance is calculated by summing the Account's Line amounts up to that date.
+
+The models also contain references to **counterparties** and **Business Model Objects (BMOs)** which are stored and
+returned for convenience, but not really used by the service (except for filtering).
+
+## Implementation details
+
+The service's focus has been on operational speed, especially when calculating balances. All objects are kept in
+memory, sometimes at the cost of startup time. Changes are persisted to mongo using the event sourcing pattern provided
+by sourced.
+
+#### Persistence with sourced
+
+The system uses [**sourced**](https://github.com/mateodelnorte/sourced) for
+persistence, a library that persists and replays method calls with their passed params to restore an entity's
+(in our case GeneralLedger) state. This can have some impact on startup time, though uses snapshotting to minimise the
+effect.
+
+Sourced has the advantages of leaving a comprehensive audit trail, and enabling us to recreate the state of the system
+at a given timestamp - something we've built upon with the
+[`/gl/:LEDGER_ID/snapshot-transactions`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-GetGlLedger_idSnapshotTransactions) endpoint.
+
+The best way to see a ledger's state via the database is in the `GeneralLedger.snapshots` collection. This probably won't
+contain the ledger's current state though, as snapshots are generated infrequently to squash up events. You can manually
+generate a snapshot with the ledger's current state by `POST`ing to the
+[`/gl/:LEDGER_ID/take-snapshot`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-GetGlLedger_idTakeSnapshot) endpoint.
+
+#### Balance generation
+
+Generating balances based on thousands of transactions has some impact on performance, especially as we're using BigNumber to
+prevent floating point arithmetic issues. To improve performance, we generate and cache balances for each account at the monthly
+anniversary of the account's first transaction. Generating a balance for a date then involves only adding the transactions between
+the date and the balance cache immediately prior to the date. To make things even snappier we also cache the result of every
+balance request that's processed, so the second time you hit `/gl/myco/balances?date=2015-01-13` will probably be faster than the
+first.
+
+Whenever a transaction is added, updated, or deleted, all caches with dates after the transaction are invalidated. Regenerating the
+caches can take seconds and, since node is unithreaded, get in the way of processing requests. To overcome this, the task is split
+into microtasks (one per cache) which are placed on the **Low Priority Queue** (aka the **LPQ**). The LPQ processes a microtask
+then sleeps for a bit so requests can be processed. This means the balance caches could take a few minutes to generate after CUDing
+some old transactions, resulting in slowed balance fetching, but this is unlikely to have much real-world impact. You can monitor
+the status of the LPQ at [`/lpq/stats`](http://electronifie.github.io/accountifie-svc/#api-Util-GetLpqStats).
+
+#### Multi-day transactions
+
+Some Transactions, like depreciation, occur over a period instead of on a given date. These transactions have a `dateEnd` as well
+as a `date`. When a balance is calculated on a date that falls part-way through the period, it will contain only the portion of
+the transaction's amount for the period that has lapsed. For instance, for a transaction with
+`date='2015-01-01', dateEnd='2015-01-04', amount='4.00'`:
+  - a balance on `2015-01-01` would include only $1 for that transaction.
+  - a balance on `2015-01-02` would include $2
+  - a balance on `2015-01-03` would include $3
+  - balances on `2015-01-04` and beyond would include all $4
+
+When requesting a list of transactions for a period that contains only a portion of the transaction, the transaction's amount will
+reflect the amount during the overlap and the transaction's `date` or `endDate` will be adjusted so the transaction fits within
+the specified period. E.g. a transaction with `date='2015-01-01', dateEnd='2015-01-04', amount='4.00'`:
+ - for `/gl/myco/tranactions?from=2015-01-02&to=2015-01-10` will return `date='2015-01-02', dateEnd='2015-01-04', amount='3.00'`
+ - for `/gl/myco/tranactions?from=2014-12-01&to=2015-01-02` will return `date='2015-01-01', dateEnd='2015-01-02', amount='2.00'`
+ - for `/gl/myco/tranactions?from=2015-01-02&to=2015-01-03` will return `date='2015-01-02', dateEnd='2015-01-03', amount='2.00'`
+
+For reporting convenience, you can provide the `chunkFrequency=end-of-month` param to
+[`/gl/:LEDGER_ID/transactions`](http://electronifie.github.io/accountifie-svc/#api-Ledger-GetGlLedger_idTransaction), which
+will break a multi-day transaction into multiple transactions at each month's boundary.
