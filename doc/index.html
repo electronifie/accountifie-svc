@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><p><a href="https://travis-ci.org/electronifie/graph-calc"><img src="https://travis-ci.org/electronifie/graph-calc.svg?branch=master" alt="Build Status"></a></p>
+<h2>Getting started</h2><p><strong>Install</strong> <code>npm install graph-calc --save</code></p>
+<p><strong>Test</strong> <code>npm test</code></p>
+<p><strong>Generate Docs</strong> <code>npm doc</code></p>
+<hr>
+
+<h2>Constructing the graph</h2><h3>Setup</h3><p>A more complete setup can be found <a href="https://github.com/electronifie/graph-calc/blob/13a808c4270b641ee8fb50e5c6e9961b62f5ffbd/test/_SchoolGraph.js#L124-L124">here</a>.</p>
+<pre class="prettyprint source lang-javascript"><code>var Edge = require('graph-calc').Edge;
+var Factory = require('graph-calc').Factory;
+var Graph = require('graph-calc').Graph;
+var Node = require('graph-calc').Node;
+var util = require('util');
+
+/* create node types */
+
+var TeacherNode = function (options) {
+  this.id = this.type + '-' + options.raw.id;
+  Node.call(this, options);
+};
+util.inherits(TeacherNode, Node);
+TeacherNode.prototype.type = 'teacher';
+
+var ClassNode = function (options) {
+  this.id = this.type + '-' + options.raw.id;
+  Node.call(this, options);
+};
+util.inherits(ClassNode, Node);
+ClassNode.prototype.type = 'class';
+
+/* create an edge type */
+
+var TeachesEdge = function (options) {
+  this.id = this.type + '-' + options.raw.teacher.id + '-' + options.raw.class.id;
+  this.fromNode = options.factory.createOrUpdateNode(this.fromNodeType, options.raw.teacher);
+  this.toNode = options.factory.createOrUpdateNode(this.toNodeType, options.raw.class);
+  Edge.call(this, options);
+};
+util.inherits(TeachesEdge, Edge);
+TeachesEdge.prototype.fromNodeType = 'teacher';
+TeachesEdge.prototype.type = 'teaches';
+TeachesEdge.prototype.toNodeType = 'class';
+TeachesEdge.raw2id = function (raw) { return TeachesEdge.prototype.type + '-' + raw.teacher.id + '-' + raw.class.id };
+
+/* create the graph, registering the nodes/edges via a Factory */
+
+var schoolGraph = new Graph ({
+  factory: new Factory({
+    nodeClasses: [ TeacherNode, ClassNode ],
+    edgeClasses: [ TeachesEdge ]
+  });
+});</code></pre><h3>Node / Edge creation</h3><p>Create an edge, automatically creating the node if it doesn't exist (<a href="https://github.com/electronifie/graph-calc/blob/master/test/1_graph.js">more examples</a>):</p>
+<pre class="prettyprint source lang-javascript"><code>  schoolGraph.factory.createOrUpdateEdge('teaches', { teacher: { id: 'Sue' }, class: { id: 'Chemistry' } });
+  schoolGraph.factory.createOrUpdateEdge('teaches', { teacher: { id: 'Sue' }, class: { id: 'Physics' } });</code></pre><h3>Traversal</h3><p>Traverse the full graph (<a href="https://github.com/electronifie/graph-calc/blob/master/test/6_traverser.js">more examples</a>):</p>
+<pre class="prettyprint source lang-javascript"><code>var Traverser = require('graph-calc').Traverser;
+
+var startNode = graph.factory.getNode('teacher', 'teacher-Sue');
+var traverser = new Traverser({
+  onVisitNode: function (node, meta) {
+    var path = meta.path;
+    var depth = meta.path;
+    var viaEdge = meta.viaEdge;
+    var previouslyVisited = meta.previouslyVisited;
+    ...
+  },
+  onTraverseEdge: function (edge) { ... },
+  // Other options:
+  // onlyNodeTypes: ['teacher', 'student', ...],
+  // onlyEdgeTypes: ['teaches', ...],
+  // excludeNodeTypes: ['teacher', ...],
+  // excludeEdgeTypes: ['teaches', ...],
+  // maxDepth: 3,
+  // allowLoops: true,
+  // shouldVisitNode: function (node) { return true; },
+  // shouldTraverseEdge: function (edge) { return true; },
+});
+traverser.traverse(startNode);</code></pre><p>Traverse along a path of edge types (<a href="https://github.com/electronifie/graph-calc/blob/master/test/7_pathTraverser.js">more examples</a>):</p>
+<pre class="prettyprint source lang-javascript"><code>var PathTraverser = require('graph-calc').PathTraverser;
+
+var traverser = new PathTraverser({
+  path: [ 'teaches' /* -> CLASS */, 'attendedBy' /* -> STUDENT */ ],
+  onLeafNode: function (node, meta) { ... }
+});
+traverser.traverse(teacherNode);</code></pre><h3>Calculation</h3><p>Perform relationship-based calculations, and queries of the graph aided by lodash (<a href="https://github.com/electronifie/graph-calc/blob/master/test/8_calculator.js">more examples</a>):</p>
+<pre class="prettyprint source lang-javascript"><code>var Calculator = require('graph-calc').Calculator;
+
+var classByDepartmentCalculator = new Calculator({ acceptsNodeType: 'student' })
+  .start()
+    .withNodes({ path: ['attends' /* -> CLASS */, 'providedBy' /* -> DEPARTMENT */], revisitNodes: true })
+    .map(function (node) { return node.id; })
+    .countBy()
+  .finish();
+
+var teacherStudentCalculator = new Calculator({ acceptsNodeType: 'teacher' })
+  .start()
+    .withNodes({ path: ['teaches' /* -> CLASS */, 'attendedBy' /* -> STUDENT */], revisitNodes: false })
+    .mapAndIndexCalc(classByDepartmentCalculator)
+  .finish();
+
+var result = teacherStudentCalculator.calculate(targetNode);
+
+// e.g result:
+// {
+//   'student-Bobby': {
+//     'department-Science': 2,
+//     'department-Art': 1
+//   },
+//   'student-Jo': {
+//     'department-Science': 4
+//   }
+// }</code></pre><h3>Events</h3><p>Subscribe to events within a node's network (<a href="https://github.com/electronifie/graph-calc/blob/master/test/10_networkSubscriber.js">more examples</a>):</p>
+<pre class="prettyprint source lang-javascript"><code>  var NetworkSubscriber = require('graph-calc').NetworkSubscriber;
+
+  // Subscribe to all the 'grade-added' and 'report-due' (fictional) events for
+  // all student's taught by a teacher.
+  new NetworkSubscriber({
+    node: graph.factory.getNode('teacher', 'teacher-Sue'),
+
+    // Define the network
+    maxDepth: 3,
+    onlyEdgeTypes: ['teaches', 'attendedBy'],
+
+    // Attach the listeners
+    nodeEvents: {
+      'grade-added': function (grade) { ... },
+      'report-due': function (reportName) { ... }
+    }
+  });</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Factory.html">Factory</a></li><li><a href="Graph.html">Graph</a></li><li><a href="NetworkSubscriber.html">NetworkSubscriber</a></li><li><a href="Node.html">Node</a></li><li><a href="PathTraverser.html">PathTraverser</a></li><li><a href="Serializer.html">Serializer</a></li><li><a href="Traverser.html">Traverser</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Dec 20 2015 23:22:41 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
