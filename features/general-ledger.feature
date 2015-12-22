@@ -5,19 +5,19 @@ Feature: General Ledger
     Given I have an empty general ledger for "efie"
 
      When I add the transactions:
-          | id | date       | comment        | type    | lines.accountId | lines.amount | lines.counterpartyId |
-          |  1 | 2014-03-07 | 123: Cleaning  | expense |            7022 |       280.28 | bedbath              |
-          |    |            |                |         |            3000 |      -280.28 | bedbath              |
-          |    |            |                |         |                 |              |                      |
-          |  2 | 2014-03-10 | 124: Apple     | expense |            1701 |     13056.30 | apple                |
-          |    |            |                |         |            3000 |    -13056.30 | apple                |
+          | id | date       | comment        | type    | lines.accountId | lines.amount | lines.counterpartyId |lines.projectId       |
+          |  1 | 2014-03-07 | 123: Cleaning  | expense |            7022 |       280.28 | bedbath              | proj123              |
+          |    |            |                |         |            3000 |      -280.28 | bedbath              | proj124              |
+          |    |            |                |         |                 |              |                      |                      |
+          |  2 | 2014-03-10 | 124: Apple     | expense |            1701 |     13056.30 | apple                | proj234              |
+          |    |            |                |         |            3000 |    -13056.30 | apple                | proj234              |
 
       And I save and restore from a snapshot
 
      Then the transaction history for account "3000" should be:
-          | id | date       | dateEnd | comment        | contraAccounts     | counterparty |  amount   |
-          |  1 | 2014-03-07 |         | 123: Cleaning  | 7022               | bedbath      |   -280.28 |
-          |  2 | 2014-03-10 |         | 124: Apple     | 1701               | apple        | -13056.30 |
+          | id | date       | dateEnd | comment        | contraAccounts     | counterparty |  amount   | project |
+          |  1 | 2014-03-07 |         | 123: Cleaning  | 7022               | bedbath      |   -280.28 | proj123 |
+          |  2 | 2014-03-10 |         | 124: Apple     | 1701               | apple        | -13056.30 | proj234 |
 
       And the account balances should be:
           | id      |  openingBalance  |  shift    | closingBalance |
