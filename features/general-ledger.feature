@@ -7,7 +7,7 @@ Feature: General Ledger
      When I add the transactions:
           | id | date       | comment        | type    | lines.accountId | lines.amount | lines.counterpartyId |lines.projectId  |
           |  1 | 2014-03-07 | 123: Cleaning  | expense |            7022 |       280.28 | bedbath              | proj123         |
-          |    |            |                |         |            3000 |      -280.28 | bedbath              | proj124         |
+          |    |            |                |         |            3000 |      -280.28 | bedbath              | proj123         |
           |    |            |                |         |                 |              |                      |                 |
           |  2 | 2014-03-10 | 124: Apple     | expense |            1701 |     13056.30 | apple                | proj234         |
           |    |            |                |         |            3000 |    -13056.30 | apple                | proj234         |
