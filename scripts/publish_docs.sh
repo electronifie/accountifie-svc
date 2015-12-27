@@ -8,7 +8,7 @@ if [ "$TRAVIS_REPO_SLUG" == "electronifie/accountifie-svc" ] && [ "$TRAVIS_NODE_
   make docs
 
   echo -e "Publishing docs...\n"
-  cp -R ./docs $HOME/api-docs
+  mv ./docs $HOME/api-docs
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
@@ -16,8 +16,8 @@ if [ "$TRAVIS_REPO_SLUG" == "electronifie/accountifie-svc" ] && [ "$TRAVIS_NODE_
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/electronifie/accountifie-svc gh-pages > /dev/null
 
   cd gh-pages
-  git rm -rf .
-  cp -Rf $HOME/api-docs/* .
+  find . -not -name '.git*' | xargs rm -r
+  cp -rf $HOME/api-docs/* .
   git add -f .
   git commit -m "Updating autogen'd docs for travis build $TRAVIS_BUILD_NUMBER."
   git push -fq origin gh-pages > /dev/null
