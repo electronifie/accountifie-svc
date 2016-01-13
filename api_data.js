@@ -310,6 +310,13 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Tag[]",
+            "optional": true,
+            "field": "withTags",
+            "description": "<p>only return transaction lines with these tags</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "String",
             "allowedValues": [
               "'end-of-month'"
@@ -658,6 +665,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
@@ -753,6 +767,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
@@ -859,6 +880,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
@@ -943,6 +971,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
@@ -1038,6 +1073,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
@@ -1122,6 +1164,13 @@ define({ "api": [
             "optional": false,
             "field": "counterpartyId",
             "description": "<p>The counterparty for this line.</p>"
+          },
+          {
+            "group": "TransactionLine",
+            "type": "Tag[]",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>The tags for this line.</p>"
           }
         ]
       },
