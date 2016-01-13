@@ -252,7 +252,7 @@
   },
   {
     "type": "get",
-    "url": "/gl/:LEDGER_ID/transaction",
+    "url": "/gl/:LEDGER_ID/transactions",
     "title": "transactions",
     "group": "Ledger",
     "version": "v1.0.0",
@@ -330,7 +330,7 @@
     },
     "filename": "lib/routes/gl/transactions.js",
     "groupTitle": "Ledger",
-    "name": "GetGlLedger_idTransaction",
+    "name": "GetGlLedger_idTransactions",
     "success": {
       "fields": {
         "Success 200": [
@@ -678,7 +678,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"laptop\", \"equip\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\", \"tags\": [] }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -771,7 +771,7 @@
           {
             "group": "TransactionLine",
             "type": "Tag[]",
-            "optional": false,
+            "optional": true,
             "field": "tags",
             "description": "<p>The tags for this line.</p>"
           }
@@ -780,7 +780,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"equip\", \"laptop\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -884,7 +884,7 @@
           {
             "group": "TransactionLine",
             "type": "Tag[]",
-            "optional": false,
+            "optional": true,
             "field": "tags",
             "description": "<p>The tags for this line.</p>"
           }
@@ -893,7 +893,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"equip\", \"laptop\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -984,7 +984,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"laptop\", \"equip\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\", \"tags\": [] }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -1077,7 +1077,7 @@
           {
             "group": "TransactionLine",
             "type": "Tag[]",
-            "optional": false,
+            "optional": true,
             "field": "tags",
             "description": "<p>The tags for this line.</p>"
           }
@@ -1086,7 +1086,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"equip\", \"laptop\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -1177,7 +1177,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\" },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\" }\n  ]\n}",
+          "content": "{\n  \"date\": \"2015-01-19\",\n  \"comment\": \"Laptop purchase\",\n  \"type\": \"equip-purchase\",\n  \"bmoId\": \"equip-laptop-01\",\n  \"lines\": [\n    { \"account\": \"equipment\", \"amount\": \"2000.00\", \"counterpartyId\": \"apple\", \"tags\": [\"laptop\", \"equip\"] },\n    { \"account\": \"creditcard\", \"amount\": \"-2000.00\", \"counterpartyId\": \"apple\", \"tags\": [] }\n  ]\n}",
           "type": "json"
         }
       ]
