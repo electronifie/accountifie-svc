@@ -28,6 +28,13 @@ var getTransactionsFromTable = function (transactionsTable) {
       var lineInfo = _.chain(transaction)
         .pick(function (value, key) { return LINE_RE.test(key); })
         .mapKeys(function (value, key) { return key.replace(LINE_RE, ''); })
+        .mapValues(function (value, key) {
+          if (key === 'tags' && !!value) {
+            return value.split(',');
+          } else {
+            return value;
+          }
+        })
         .value();
 
       if (_.values(lineInfo).join('')) { // Only add lines with content
@@ -142,6 +149,8 @@ module.exports = function () {
     /^the transaction history for account "([^"]*)" ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:chunked at "[^"]*" )?)(?:and )?((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)should be:$/,
     function (account, fromDateStr, toDateStr, chunkFrequencyStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, historyTable, callback) {
 
+      var providedFields = historyTable.raw()[0];
+
       var fromDate = fromDateStr ? fromDateStr.replace(/^from /, '') : undefined;
       var toDate = toDateStr ? toDateStr.replace(/^to /, '') : undefined;
       var chunkFrequency = chunkFrequencyStr ? chunkFrequencyStr.replace(/^chunked at "([^"]*)" $/, '$1') : undefined;
@@ -160,15 +169,36 @@ module.exports = function () {
         },
         chunkFrequency: chunkFrequency
       });
-      var alteredExpectedHistory = historyTable.hashes().map(function (hash) {
-        hash.contraAccounts = (hash.contraAccounts || '').split(','); // contraAccounts needs to be an array
-        return hash;
+      var alteredExpectedHistory = historyTable.hashes().map(function (row) {
+        row.contraAccounts = (row.contraAccounts || '').split(','); // contraAccounts needs to be an array
+        return row;
       });
-      history.forEach(function (item) { delete item.bmoId; });
+      history = history.map(function (item) {
+        return _.pick(item, providedFields);
+      });
       assert.deepEqual(history, alteredExpectedHistory);
       callback();
     }
   );
+
+  this.Then(/^the transaction lines for tag "([^"]*)" should be:$/, function (tag, table, callback) {
+    var providedFields = table.raw()[0];
+    var transactions = this.generalLedger.transactions({
+      filter: { withTags: [tag] }
+    });
+    var alteredExpected = table.hashes().map(function (hash) {
+      hash.contraAccounts = (hash.contraAccounts || '').split(','); // contraAccounts needs to be an array
+      return hash;
+    });
+    transactions = _.chain(transactions).map(function (t) {
+      return t;
+    }).flatten().map(function (item) {
+      return _.pick(item, providedFields);
+    }).value();
+
+    assert.deepEqual(transactions, alteredExpected);
+    callback();
+  });
 
   this.Then(
     /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)should be:$/,

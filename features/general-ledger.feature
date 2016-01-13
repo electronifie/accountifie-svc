@@ -80,6 +80,25 @@ Feature: General Ledger
       | 1       |             0.00 |     1.00 |           1.00 |
       | 2       |             0.00 |    -1.00 |          -1.00 |
 
+  Scenario: It allows tagging of transaction lines for quick retrieval
+    Given I have an empty general ledger for "efie"
+
+    When I add the transactions:
+      | id | date       | comment        | type    | lines.accountId | lines.amount | lines.counterpartyId | lines.tags   |
+      |  1 | 2014-03-01 | 123: Cleaning  | expense |               1 |        10.00 | bedbath              | tag1,tag2    |
+      |    |            |                |         |               2 |       -10.00 | foobath              |              |
+      |  2 | 2014-03-02 | 124: Cleaning  | expense |               1 |         9.00 | bedbath              |              |
+      |    |            |                |         |               2 |        -9.00 | foobath              |              |
+      |  3 | 2014-03-02 | 125: Cleaning  | expense |               3 |         8.00 | bedbath              |              |
+      |    |            |                |         |               4 |        -8.00 | foobath              | tag1         |
+
+    And I save and restore from a snapshot
+
+    Then the transaction lines for tag "tag1" should be:
+      | id | date       | dateEnd | comment        | contraAccounts | counterparty    |  amount   |
+      |  1 | 2014-03-01 |         | 123: Cleaning  |              2 | bedbath         |     10.00 |
+      |  3 | 2014-03-02 |         | 125: Cleaning  |              3 | foobath         |     -8.00 |
+
   Scenario: It allows transactions spanning multiple dates, and only includes the covered portion in the balance
     Given I have an empty general ledger for "efie"
 
