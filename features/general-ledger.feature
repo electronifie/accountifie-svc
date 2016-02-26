@@ -280,6 +280,49 @@ Feature: General Ledger
       | 2       |            -2.00 |    -3.00 |          -5.00 |
       | 4       |             0.00 |    -4.00 |          -4.00 |
 
+  Scenario: It allows transactions to be deleted by bmo id
+    Given I have an empty general ledger for "efie"
+
+    When I add the transactions:
+      | id | date       | dateEnd    | comment              | type    | bmoId    | lines.accountId | lines.amount | lines.counterpartyId |
+      |  1 | 2014-03-01 |            | 123: Depreciation    | expense |          |               1 |        92.00 | depreci              |
+      |    |            |            |                      |         |          |               2 |       -92.00 | depreci              |
+      |    |            |            |                      |         |          |                 |              |                      |
+      |  2 | 2014-03-25 |            | 124: Apple           | expense | bmo-one  |               1 |         2.00 | apple                |
+      |    |            |            |                      |         |          |               2 |        -2.00 | apple                |
+      |    |            |            |                      |         |          |                 |              |                      |
+      |  3 | 2014-04-01 |            | 125: Pear            | expense | bmo-one  |               1 |         3.00 | pear                 |
+      |    |            |            |                      |         |          |               2 |        -3.00 | pear                 |
+      |    |            |            |                      |         |          |                 |              |                      |
+      |  4 | 2014-04-02 |            | 126: Peach           | expense |          |               1 |         4.00 | peach                |
+      |    |            |            |                      |         |          |               2 |        -4.00 | peach                |
+      |    |            |            |                      |         |          |                 |              |                      |
+      |  5 | 2014-05-01 |            | 127: Apricot         | expense |          |               1 |         5.00 | apricot              |
+      |    |            |            |                      |         |          |               2 |        -5.00 | apricot              |
+
+    And I save and restore from a snapshot
+
+    Then the transaction history for account "1" from 2014-01-01 to 2015-01-01 should be:
+      | id | date       | dateEnd    | comment                      | contraAccounts     | counterparty |  amount   |
+      |  1 | 2014-03-01 |            | 123: Depreciation            | 2                  | depreci      |     92.00 |
+      |  2 | 2014-03-25 |            | 124: Apple                   | 2                  | apple        |      2.00 |
+      |  3 | 2014-04-01 |            | 125: Pear                    | 2                  | pear         |      3.00 |
+      |  4 | 2014-04-02 |            | 126: Peach                   | 2                  | peach        |      4.00 |
+      |  5 | 2014-05-01 |            | 127: Apricot                 | 2                  | apricot      |      5.00 |
+
+    When I delete transactions for bmo "bmo-one"
+
+    Then the transaction history for account "1" from 2014-01-01 to 2015-01-01 should be:
+      | id | date       | dateEnd    | comment                      | contraAccounts     | counterparty |  amount   |
+      |  1 | 2014-03-01 |            | 123: Depreciation            | 2                  | depreci      |     92.00 |
+      |  4 | 2014-04-02 |            | 126: Peach                   | 2                  | peach        |      4.00 |
+      |  5 | 2014-05-01 |            | 127: Apricot                 | 2                  | apricot      |      5.00 |
+
+    And the account balances from 2014-04-01 to 2014-04-30 should be:
+      | id      |  openingBalance  | shift    | closingBalance |
+      | 1       |            92.00 |     4.00 |          96.00 |
+      | 2       |           -92.00 |    -4.00 |         -96.00 |
+
   Scenario: It rejects unbalanced transactions
     Given I have an empty general ledger for "efie"
 

@@ -121,3 +121,6 @@ the specified period. E.g. a transaction with `date='2015-01-01', dateEnd='2015-
 For reporting convenience, you can provide the `chunkFrequency=end-of-month` param to
 [`/gl/:LEDGER_ID/transactions`](http://electronifie.github.io/accountifie-svc/#api-Ledger-GetGlLedger_idTransaction), which
 will break a multi-day transaction into multiple transactions at each month's boundary.
+
+#### Version history
+ - *v1.0.7* - 2016-02-26 - Add /gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete
