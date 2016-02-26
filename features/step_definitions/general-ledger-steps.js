@@ -127,6 +127,11 @@ module.exports = function () {
     callback();
   });
 
+  this.When(/^I delete transactions for bmo "([^"]*)"$/, function (bmoId, callback) {
+    this.generalLedger.deleteBmoTransactions({ bmoId: bmoId });
+    callback();
+  });
+
   this.When(/^I save and restore from a snapshot$/, function (callback) {
     var ss = this.generalLedger.snapshot();
     this.generalLedger = new GeneralLedger(ss, []);
