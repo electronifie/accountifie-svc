@@ -129,6 +129,17 @@ define({ "api": [
     }
   },
   {
+    "type": "post",
+    "url": "/gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete",
+    "title": "delete",
+    "group": "BMO_Transactions",
+    "version": "v1.0.0",
+    "description": "<p>Deletes transactions for the bmo.</p>",
+    "filename": "lib/routes/gl/bmo-transactions/delete.js",
+    "groupTitle": "BMO_Transactions",
+    "name": "PostGlLedger_idBmoTransactionsBmo_idDelete"
+  },
+  {
     "type": "get",
     "url": "/gl/:LEDGER_ID/balances",
     "title": "balances",
@@ -683,17 +694,6 @@ define({ "api": [
         }
       ]
     }
-  },
-  {
-    "type": "post",
-    "url": "/gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete",
-    "title": "delete",
-    "group": "Transaction",
-    "version": "v1.0.0",
-    "description": "<p>Deletes transactions for the bmo.</p>",
-    "filename": "lib/routes/gl/bmo-transactions/delete.js",
-    "groupTitle": "Transaction",
-    "name": "PostGlLedger_idBmoTransactionsBmo_idDelete"
   },
   {
     "type": "post",
