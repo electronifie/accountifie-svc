@@ -123,5 +123,6 @@ For reporting convenience, you can provide the `chunkFrequency=end-of-month` par
 will break a multi-day transaction into multiple transactions at each month's boundary.
 
 #### Version history
+ - *v1.0.9* - 2016-03-01 - Fix digest of deleteBmoTransactions.
  - *v1.0.8* - 2016-02-26 - Fix cconfig bug when globally installed.
  - *v1.0.7* - 2016-02-26 - Add /gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete
