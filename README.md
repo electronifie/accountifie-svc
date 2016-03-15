@@ -65,7 +65,7 @@ effect.
 
 Sourced has the advantages of leaving a comprehensive audit trail, and enabling us to recreate the state of the system
 at a given timestamp - something we've built upon with the
-[`/gl/:LEDGER_ID/snapshot-transactions`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-GetGlLedger_idSnapshotTransactions) endpoint.
+[`/gl/:LEDGER_ID/snapshot/transactions`](http://electronifie.github.io/accountifie-svc/#api-Ledger_Utils-GetGlLedger_idSnapshotTransactions) endpoint.
 
 The best way to see a ledger's state via the database is in the `GeneralLedger.snapshots` collection. This probably won't
 contain the ledger's current state though, as snapshots are generated infrequently to squash up events. You can manually
@@ -123,6 +123,7 @@ For reporting convenience, you can provide the `chunkFrequency=end-of-month` par
 will break a multi-day transaction into multiple transactions at each month's boundary.
 
 #### Version history
- - *v1.0.9* - 2016-03-01 - Fix digest of deleteBmoTransactions.
- - *v1.0.8* - 2016-02-26 - Fix cconfig bug when globally installed.
- - *v1.0.7* - 2016-02-26 - Add /gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete
+ - *v1.0.10* - 2016-03-15 - Add /gl/:LEDGER_ID/snapshot/balances and move /gl/:LEDGER_ID/snapshot-transactions to /gl/:LEDGER_ID/snapshot/transactions
+ - *v1.0.9*  - 2016-03-01 - Fix digest of deleteBmoTransactions.
+ - *v1.0.8*  - 2016-02-26 - Fix cconfig bug when globally installed.
+ - *v1.0.7*  - 2016-02-26 - Add /gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete

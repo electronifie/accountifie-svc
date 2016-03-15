@@ -73,7 +73,7 @@ account-transactions:
 	curl '$(URL_BASE)/gl/$(COMPANY)/account/$(ACCOUNT)/transactions' | ./node_modules/.bin/underscore pretty
 
 snapshot-transactions:
-	curl '$(URL_BASE)/gl/$(COMPANY)/snapshot-transactions?snapshotDate=$(DATE)' | ./node_modules/.bin/underscore pretty
+	curl '$(URL_BASE)/gl/$(COMPANY)/snapshot/transactions?snapshotDate=$(DATE)' | ./node_modules/.bin/underscore pretty
 
 delete-transaction:
 	curl -X POST '$(URL_BASE)/gl/$(COMPANY)/transaction/$(TRANSACTION)/delete' | ./node_modules/.bin/underscore pretty
