@@ -99,6 +99,13 @@ Feature: General Ledger
       |  1 | 2014-03-01 |         | 123: Cleaning  |              2 | bedbath         |     10.00 |
       |  3 | 2014-03-02 |         | 125: Cleaning  |              3 | foobath         |     -8.00 |
 
+    And the account balances with tags "tag1" should be:
+      | id      |  openingBalance  | shift    | closingBalance |
+      | 1       |             0.00 |    10.00 |          10.00 |
+      | 2       |             0.00 |     0.00 |           0.00 |
+      | 3       |             0.00 |     0.00 |           0.00 |
+      | 4       |             0.00 |    -8.00 |          -8.00 |
+
   Scenario: It allows transactions spanning multiple dates, and only includes the covered portion in the balance
     Given I have an empty general ledger for "efie"
 

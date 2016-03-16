@@ -206,14 +206,15 @@ module.exports = function () {
   });
 
   this.Then(
-    /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)should be:$/,
-    function (fromDateStr, toDateStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, balanceTable, callback) {
+    /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)(?:and )?((?:with tags? "[^"]*" )?)should be:$/,
+    function (fromDateStr, toDateStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, withTagsStr, balanceTable, callback) {
 
       var fromDate = fromDateStr ? fromDateStr.replace(/^from /, '') : undefined;
       var toDate = toDateStr ? toDateStr.replace(/^to /, '') : undefined;
       var excludingCounterparties = excludingCounterpartiesStr ? excludingCounterpartiesStr.replace(/^excluding counterparties? "([^"]*)" $/, '$1').split(',') : '';
       var excludingContraAccounts = excludingContraAccountsStr ? excludingContraAccountsStr.replace(/^excluding contra accounts? "([^"]*)" $/, '$1').split(',') : '';
       var withCounterparties = withCounterpartiesStr ? withCounterpartiesStr.replace(/^with counterparties? "([^"]*)" $/, '$1').split(',') : '';
+      var withTags = withTagsStr ? withTagsStr.replace(/^with tags? "([^"]*)" $/, '$1').split(',') : '';
 
       var balance = this.generalLedger.balances({
         from: fromDate,
@@ -221,7 +222,8 @@ module.exports = function () {
         filter: {
           excludingCounterparties: excludingCounterparties,
           excludingContraAccounts: excludingContraAccounts,
-          withCounterparties: withCounterparties
+          withCounterparties: withCounterparties,
+          withTags: withTags
         }
       });
       assert.deepEqual(balance, balanceTable.hashes());
