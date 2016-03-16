@@ -94,10 +94,17 @@ Feature: General Ledger
 
     And I save and restore from a snapshot
 
-    Then the transaction lines for tag "tag1" should be:
+    Then the transaction lines with tag "tag1" should be:
       | id | date       | dateEnd | comment        | contraAccounts | counterparty    |  amount   |
       |  1 | 2014-03-01 |         | 123: Cleaning  |              2 | bedbath         |     10.00 |
       |  3 | 2014-03-02 |         | 125: Cleaning  |              3 | foobath         |     -8.00 |
+
+    And the transaction lines without tag "tag1" should be:
+      | id | date       | dateEnd | comment        | contraAccounts | counterparty    |  amount   |
+      |  2 | 2014-03-02 |         | 124: Cleaning  |              2 | bedbath         |      9.00 |
+      |  1 | 2014-03-01 |         | 123: Cleaning  |              1 | foobath         |    -10.00 |
+      |  2 | 2014-03-02 |         | 124: Cleaning  |              1 | foobath         |     -9.00 |
+      |  3 | 2014-03-02 |         | 125: Cleaning  |              4 | bedbath         |      8.00 |
 
     And the account balances with tags "tag1" should be:
       | id      |  openingBalance  | shift    | closingBalance |
@@ -105,6 +112,13 @@ Feature: General Ledger
       | 2       |             0.00 |     0.00 |           0.00 |
       | 3       |             0.00 |     0.00 |           0.00 |
       | 4       |             0.00 |    -8.00 |          -8.00 |
+
+    And the account balances without tags "tag1" should be:
+      | id      |  openingBalance  | shift    | closingBalance |
+      | 1       |             0.00 |     9.00 |           9.00 |
+      | 2       |             0.00 |   -19.00 |         -19.00 |
+      | 3       |             0.00 |     8.00 |           8.00 |
+      | 4       |             0.00 |     0.00 |           0.00 |
 
   Scenario: It allows transactions spanning multiple dates, and only includes the covered portion in the balance
     Given I have an empty general ledger for "efie"

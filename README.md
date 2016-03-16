@@ -124,6 +124,8 @@ will break a multi-day transaction into multiple transactions at each month's bo
  - *v1.0.10* - 2016-03-16 - Add /gl/:LEDGER_ID/snapshot/balances
                           - Move /gl/:LEDGER_ID/snapshot-transactions to /gl/:LEDGER_ID/snapshot/transactions
                           - Move /gl/:LEDGER_ID/take-snapshot to /gl/:LEDGER_ID/snapshot/create and require a date be provided
+                          - Add 'excludeTags' option to /gl/:LEDGER_ID/transactions
+                          - Accept 'withTags' and 'excludeTags' filter options to /gl/:LEDGER_ID/balances
  - *v1.0.9*  - 2016-03-01 - Fix digest of deleteBmoTransactions.
  - *v1.0.8*  - 2016-02-26 - Fix cconfig bug when globally installed.
  - *v1.0.7*  - 2016-02-26 - Add /gl/:LEDGER_ID/bmo-transactions/:BMO_ID/delete
