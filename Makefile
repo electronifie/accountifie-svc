@@ -9,7 +9,7 @@ run:
 	./node_modules/.bin/supervisor bin/accountifie-svc | ./node_modules/.bin/bunyan -l $(LOG_LEVEL)
 
 test:
-	$(MAKE) DEBUG= LOG_LEVEL=20 test-cucumber
+	$(MAKE) DEBUG= LOG_LEVEL=20 test-cucumber test-mocha
 
 docs:
 	./node_modules/.bin/apidoc -o './docs' -i './lib'
@@ -32,6 +32,9 @@ test-current:
 test-watch:
 	hash watch-run 2>/dev/null || npm install watch-run -g
 	watch-run -i -p '+(features|lib)/**' make test
+
+test-mocha:
+	DEBUG=$(DEBUG) ./node_modules/.bin/mocha test
 
 take-snapshot:
 	curl -X POST '$(URL_BASE)/gl/$(COMPANY)/take-snapshot' | ./node_modules/.bin/underscore pretty
@@ -70,7 +73,7 @@ account-transactions:
 	curl '$(URL_BASE)/gl/$(COMPANY)/account/$(ACCOUNT)/transactions' | ./node_modules/.bin/underscore pretty
 
 snapshot-transactions:
-	curl '$(URL_BASE)/gl/$(COMPANY)/snapshot-transactions?snapshotDate=$(DATE)' | ./node_modules/.bin/underscore pretty
+	curl '$(URL_BASE)/gl/$(COMPANY)/snapshot/transactions?snapshotDate=$(DATE)' | ./node_modules/.bin/underscore pretty
 
 delete-transaction:
 	curl -X POST '$(URL_BASE)/gl/$(COMPANY)/transaction/$(TRANSACTION)/delete' | ./node_modules/.bin/underscore pretty

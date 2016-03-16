@@ -69,13 +69,17 @@ module.exports = function () {
   });
 
   this.Given(/^I have an empty general ledger for "([^"]*)"$/, function (ledgerName, callback) {
-    this.generalLedger = new GeneralLedger();
-    this.snapshot = null;
-    this.generalLedger.init({
-      id: ledgerName
-    });
+    lowPriorityQueue.flush(function (err) {
+      assert.equal(err, undefined);
 
-    callback();
+      this.generalLedger = new GeneralLedger();
+      this.snapshot = null;
+      this.generalLedger.init({
+        id: ledgerName
+      });
+
+      callback();
+    }.bind(this));
   });
 
   this.Given(/^balance cache frequency is (\d+) (.+)$/, function (number, unit, callback) {
@@ -186,10 +190,19 @@ module.exports = function () {
     }
   );
 
-  this.Then(/^the transaction lines for tag "([^"]*)" should be:$/, function (tag, table, callback) {
+  this.Then(/^the transaction lines (with|without) tag "([^"]*)" should be:$/, function (preposition, tag, table, callback) {
     var providedFields = table.raw()[0];
+    var filter;
+    if (preposition === 'with') {
+      filter = { withTags: [tag] };
+    } else if (preposition === 'without') {
+      filter = { excludingTags: [tag] };
+    } else {
+      throw new Error('Unexpected preposition: ' + preposition);
+    }
+
     var transactions = this.generalLedger.transactions({
-      filter: { withTags: [tag] }
+      filter: filter
     });
     var alteredExpected = table.hashes().map(function (hash) {
       hash.contraAccounts = (hash.contraAccounts || '').split(','); // contraAccounts needs to be an array
@@ -206,14 +219,16 @@ module.exports = function () {
   });
 
   this.Then(
-    /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)should be:$/,
-    function (fromDateStr, toDateStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, balanceTable, callback) {
+    /^the account balances ((?:from \d{4}-\d{2}-\d{2} )?)((?:to \d{4}-\d{2}-\d{2} )?)((?:excluding counterparties "[^"]*" )?)(?:and )?((?:excluding contra accounts? "[^"]*" )?)(?:and )?((?:with counterparties? "[^"]*" )?)(?:and )?((?:with tags? "[^"]*" )?)(?:and )?((?:without tags? "[^"]*" )?)should be:$/,
+    function (fromDateStr, toDateStr, excludingCounterpartiesStr, excludingContraAccountsStr, withCounterpartiesStr, withTagsStr, excludingTagsStr, balanceTable, callback) {
 
       var fromDate = fromDateStr ? fromDateStr.replace(/^from /, '') : undefined;
       var toDate = toDateStr ? toDateStr.replace(/^to /, '') : undefined;
       var excludingCounterparties = excludingCounterpartiesStr ? excludingCounterpartiesStr.replace(/^excluding counterparties? "([^"]*)" $/, '$1').split(',') : '';
       var excludingContraAccounts = excludingContraAccountsStr ? excludingContraAccountsStr.replace(/^excluding contra accounts? "([^"]*)" $/, '$1').split(',') : '';
+      var excludingTags = excludingTagsStr ? excludingTagsStr.replace(/^without tags? "([^"]*)" $/, '$1').split(',') : '';
       var withCounterparties = withCounterpartiesStr ? withCounterpartiesStr.replace(/^with counterparties? "([^"]*)" $/, '$1').split(',') : '';
+      var withTags = withTagsStr ? withTagsStr.replace(/^with tags? "([^"]*)" $/, '$1').split(',') : '';
 
       var balance = this.generalLedger.balances({
         from: fromDate,
@@ -221,7 +236,9 @@ module.exports = function () {
         filter: {
           excludingCounterparties: excludingCounterparties,
           excludingContraAccounts: excludingContraAccounts,
-          withCounterparties: withCounterparties
+          excludingTags: excludingTags,
+          withCounterparties: withCounterparties,
+          withTags: withTags
         }
       });
       assert.deepEqual(balance, balanceTable.hashes());
