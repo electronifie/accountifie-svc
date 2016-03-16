@@ -179,14 +179,14 @@
           {
             "group": "Parameter",
             "type": "CounterpartyId[]",
-            "optional": false,
+            "optional": true,
             "field": "excludingCounterparties",
             "description": "<p>IDs of transaction counterparties to exclude from the balances</p>"
           },
           {
             "group": "Parameter",
             "type": "AccountId[]",
-            "optional": false,
+            "optional": true,
             "field": "excludingContraAccounts",
             "description": "<p>IDs of transaction countra accounts to exclude from the balances</p>"
           },
@@ -196,6 +196,20 @@
             "optional": true,
             "field": "withCounterparties",
             "description": "<p>IDs of transaction counterparties that should be included in the balances. All others will be excluded.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Tag[]",
+            "optional": true,
+            "field": "withTags",
+            "description": "<p>only return transaction lines with these tags</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Tag[]",
+            "optional": true,
+            "field": "excludingTags",
+            "description": "<p>exclude transaction lines with these tags</p>"
           }
         ]
       },
@@ -301,14 +315,14 @@
           {
             "group": "Parameter",
             "type": "CounterpartyId[]",
-            "optional": false,
+            "optional": true,
             "field": "excludingCounterparties",
             "description": "<p>exclude transactions that have these counterparties</p>"
           },
           {
             "group": "Parameter",
             "type": "AccountId[]",
-            "optional": false,
+            "optional": true,
             "field": "excludingContraAccounts",
             "description": "<p>exclude transactions that have these contra accounts</p>"
           },
@@ -325,6 +339,13 @@
             "optional": true,
             "field": "withTags",
             "description": "<p>only return transaction lines with these tags</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Tag[]",
+            "optional": true,
+            "field": "excludingTags",
+            "description": "<p>exclude transaction lines with these tags</p>"
           },
           {
             "group": "Parameter",
@@ -438,7 +459,132 @@
   },
   {
     "type": "get",
-    "url": "/gl/:LEDGER_ID/snapshot-transactions",
+    "url": "/gl/:LEDGER_ID/snapshot/balances",
+    "title": "balances (snapshot)",
+    "group": "Ledger_Utils",
+    "version": "v1.0.0",
+    "description": "<p>Get a list of all balances in the ledger at a given date. Excludes back-dated transactions inserted after the date. Useful for reconciling balance differences in report for the same period but generated at different times.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "allowedValues": [
+              "YYYY-MM-DD"
+            ],
+            "optional": false,
+            "field": "snapshotDate",
+            "description": "<p>The date of the snapshot.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "AccountId[]",
+            "optional": true,
+            "field": "accounts",
+            "description": "<p>IDs of accounts to include</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "allowedValues": [
+              "YYYY-MM-DD"
+            ],
+            "optional": true,
+            "field": "from",
+            "description": "<p>Start date of the period to be returned</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "allowedValues": [
+              "YYYY-MM-DD"
+            ],
+            "optional": true,
+            "field": "to",
+            "description": "<p>End date of the period to be returned</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "CounterpartyId[]",
+            "optional": false,
+            "field": "excludingCounterparties",
+            "description": "<p>IDs of transaction counterparties to exclude from the balances</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "AccountId[]",
+            "optional": false,
+            "field": "excludingContraAccounts",
+            "description": "<p>IDs of transaction countra accounts to exclude from the balances</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "CounterpartyId[]",
+            "optional": true,
+            "field": "withCounterparties",
+            "description": "<p>IDs of transaction counterparties that should be included in the balances. All others will be excluded.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/routes/gl/snapshot/balances.js",
+    "groupTitle": "Ledger_Utils",
+    "name": "GetGlLedger_idSnapshotBalances",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Balance[]",
+            "optional": false,
+            "field": "_",
+            "description": "<p>a list of balances</p>"
+          }
+        ],
+        "Balance": [
+          {
+            "group": "Balance",
+            "type": "AccountId",
+            "optional": false,
+            "field": "balance.id",
+            "description": "<p>the account's ID</p>"
+          },
+          {
+            "group": "Balance",
+            "type": "Number",
+            "optional": false,
+            "field": "balance.openingBalance",
+            "description": "<p>the balance at the start of the period</p>"
+          },
+          {
+            "group": "Balance",
+            "type": "Number",
+            "optional": false,
+            "field": "balance.shift",
+            "description": "<p>the change in balance during the period</p>"
+          },
+          {
+            "group": "Balance",
+            "type": "Number",
+            "optional": false,
+            "field": "balance.closingBalance",
+            "description": "<p>the balance at the end of the period</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "[\n  {\n    \"id\": \"boa-checking\",\n    \"openingBalance\": \"0.00\",\n    \"shift\": \"62.62\",\n    \"closingBalance\": \"62.62\"\n  },\n  {\n    \"id\": \"boa-credit\",\n    \"openingBalance\": \"0.00\",\n    \"shift\": \"-62.62\",\n    \"closingBalance\": \"-62.62\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/gl/:LEDGER_ID/snapshot/transactions",
     "title": "transactions (snapshot)",
     "group": "Ledger_Utils",
     "version": "v1.0.0",
@@ -459,7 +605,7 @@
         ]
       }
     },
-    "filename": "lib/routes/gl/snapshotTransactions.js",
+    "filename": "lib/routes/gl/snapshot/transactions.js",
     "groupTitle": "Ledger_Utils",
     "name": "GetGlLedger_idSnapshotTransactions"
   },
@@ -543,14 +689,30 @@
   },
   {
     "type": "post",
-    "url": "/gl/:LEDGER_ID/take-snapshot",
-    "title": "take snapshot",
+    "url": "/gl/:LEDGER_ID/snapshot/create",
+    "title": "transactions (snapshot)",
     "group": "Ledger_Utils",
     "version": "v1.0.0",
-    "description": "<p>Generates a snapshot for the ledger. Improving startup time and snapshot-transaction request time.</p>",
-    "filename": "lib/routes/gl/takeSnapshot.js",
+    "description": "<p>create a snapshot of the ledger at the given date (boosts the speed of snapshot fetching)</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "allowedValues": [
+              "YYYY-MM-DD"
+            ],
+            "optional": false,
+            "field": "date",
+            "description": "<p>The date for which the snapshot should be created.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/routes/gl/snapshot/create.js",
     "groupTitle": "Ledger_Utils",
-    "name": "PostGlLedger_idTakeSnapshot"
+    "name": "PostGlLedger_idSnapshotCreate"
   },
   {
     "type": "post",
@@ -558,7 +720,7 @@
     "title": "",
     "group": "Ledger_Utils",
     "version": "v1.0.0",
-    "description": "<p>Upload a list of transactions to be used as a fallback for /gl/:LEDGER_ID/snapshot-transactions for use when the transactions aren't available (e.g. from before accountifie-svc was in use).</p>",
+    "description": "<p>Upload a list of transactions to be used as a fallback for /gl/:LEDGER_ID/snapshot/transactions for use when the transactions aren't available (e.g. from before accountifie-svc was in use).</p>",
     "parameter": {
       "fields": {
         "Parameter": [
