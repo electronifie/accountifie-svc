@@ -460,9 +460,9 @@
   {
     "type": "get",
     "url": "/gl/:LEDGER_ID/snapshot/balances",
-    "title": "balances (snapshot)",
-    "group": "Ledger_Utils",
-    "version": "v1.0.0",
+    "title": "balances",
+    "group": "Ledger_Snapshot",
+    "version": "v1.0.10",
     "description": "<p>Get a list of all balances in the ledger at a given date. Excludes back-dated transactions inserted after the date. Useful for reconciling balance differences in report for the same period but generated at different times.</p>",
     "parameter": {
       "fields": {
@@ -529,7 +529,7 @@
       }
     },
     "filename": "lib/routes/gl/snapshot/balances.js",
-    "groupTitle": "Ledger_Utils",
+    "groupTitle": "Ledger_Snapshot",
     "name": "GetGlLedger_idSnapshotBalances",
     "success": {
       "fields": {
@@ -585,9 +585,9 @@
   {
     "type": "get",
     "url": "/gl/:LEDGER_ID/snapshot/transactions",
-    "title": "transactions (snapshot)",
-    "group": "Ledger_Utils",
-    "version": "v1.0.0",
+    "title": "transactions",
+    "group": "Ledger_Snapshot",
+    "version": "v1.0.10",
     "description": "<p>Get a list of all transactions in the ledger at a given date. Excludes back-dated transactions inserted after the date. Useful for reconciling balance differences in report for the same period but generated at different times.</p>",
     "parameter": {
       "fields": {
@@ -606,8 +606,35 @@
       }
     },
     "filename": "lib/routes/gl/snapshot/transactions.js",
-    "groupTitle": "Ledger_Utils",
+    "groupTitle": "Ledger_Snapshot",
     "name": "GetGlLedger_idSnapshotTransactions"
+  },
+  {
+    "type": "post",
+    "url": "/gl/:LEDGER_ID/snapshot/create",
+    "title": "create",
+    "group": "Ledger_Snapshot",
+    "version": "v1.0.10",
+    "description": "<p>create a snapshot of the ledger at the given date (boosts the speed of snapshot fetching)</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "allowedValues": [
+              "YYYY-MM-DD"
+            ],
+            "optional": false,
+            "field": "date",
+            "description": "<p>The date for which the snapshot should be created.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "lib/routes/gl/snapshot/create.js",
+    "groupTitle": "Ledger_Snapshot",
+    "name": "PostGlLedger_idSnapshotCreate"
   },
   {
     "type": "get",
@@ -686,33 +713,6 @@
     "filename": "lib/routes/gl/enableBalanceCache.js",
     "groupTitle": "Ledger_Utils",
     "name": "PostGlLedger_idEnableBalanceCache"
-  },
-  {
-    "type": "post",
-    "url": "/gl/:LEDGER_ID/snapshot/create",
-    "title": "transactions (snapshot)",
-    "group": "Ledger_Utils",
-    "version": "v1.0.0",
-    "description": "<p>create a snapshot of the ledger at the given date (boosts the speed of snapshot fetching)</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Date",
-            "allowedValues": [
-              "YYYY-MM-DD"
-            ],
-            "optional": false,
-            "field": "date",
-            "description": "<p>The date for which the snapshot should be created.</p>"
-          }
-        ]
-      }
-    },
-    "filename": "lib/routes/gl/snapshot/create.js",
-    "groupTitle": "Ledger_Utils",
-    "name": "PostGlLedger_idSnapshotCreate"
   },
   {
     "type": "post",
