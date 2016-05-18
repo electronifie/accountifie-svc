@@ -121,6 +121,7 @@ For reporting convenience, you can provide the `chunkFrequency=end-of-month` par
 will break a multi-day transaction into multiple transactions at each month's boundary.
 
 #### Version history
+ - *v1.1.3*  - 2016-05-18 - Verify unique ID when using /gl/:LEDGER_ID/transaction/:TX_ID/create
  - *v1.1.2*  - 2016-04-08 - Prevent snapshot generation if snapshot already exists
  - *v1.1.1*  - 2016-03-17 
     - Return error if no data available for /gl/:LEDGER_ID/snapshot/create
