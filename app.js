@@ -112,6 +112,7 @@ FinancifieService.prototype = {
 
       this.app.set('port', this.port);
       this.server = this.app.listen(this.app.get('port'), function () {
+        log.info('IAN STARTING IT');
         log.info('Express server listening on port ' + this.server.address().port);
       }.bind(this));
       this.server.maxConnections = 20000;
